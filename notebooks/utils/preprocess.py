@@ -7,11 +7,11 @@ np.random.seed(1337)
 
 def sequential_split(X, Y, test_size=0.25):
     train_len = int(len(X) * (1 - test_size))
-    x_train = X.iloc[:train_len, :]
-    x_test = X.iloc[train_len:, :]
+    X_train = X.iloc[:train_len, :]
+    X_test = X.iloc[train_len:, :]
     y_train = Y.iloc[:train_len, :]
     y_test = Y.iloc[train_len:, :]
-    return x_train, x_test, y_train, y_test
+    return X_train, X_test, y_train, y_test
 
 def xy_split(data):
     X = data.drop(columns=['Y'])
