@@ -43,5 +43,6 @@ def preprocess(data):
     data["Y"] = data.loc[:, 41]
     data.drop(columns=[41], inplace=True)
     data = normalize_data(data, "Y")
+    data = label_encode(data, "Y")
     train_df, test_df = sequential_split(data)
     return train_df, test_df
