@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
+from tensorflow.keras.models import load_model
+
 from sklearn.metrics import classification_report
 
 TEST_SIZE = 0.3
@@ -33,15 +35,18 @@ def normalize_data(data, target_col):
 
 
 def preprocess(data):
-    data = label_encode(data, "1")
-    data = label_encode(data, "2")
-    data = label_encode(data, "3")
-    data["Y"] = data.loc[:, "41"]
-    data.drop(columns=["41"], inplace=True)
-    # data = normalize_data(data, "Y")
-    data = label_encode(data, "Y")
     train_df, test_df = train_test_split(data, test_size=TEST_SIZE, stratify=data["Y"])
     return train_df, test_df
+
+
+def encode(data):
+    data = label_encode(data, 1)
+    data = label_encode(data, 2)
+    data = label_encode(data, 3)
+    data["Y"] = data.loc[:, 41]
+    data.drop(columns=[41], inplace=True)
+    data = label_encode(data, "Y")
+    return data
 
 
 def train_and_evaluate_model(
@@ -68,3 +73,17 @@ def train_and_evaluate_model(
     model.evaluate(X_test, y_test, batch_size)
     report = get_classification_report(X_test, y_test, model)
     return history, report
+
+
+def load_and_evaluate_model(
+    model_name,
+    X_test,
+    y_test,
+    batch_size=1024,
+):
+    model = load_model('../models/'+model_name)
+    print(f"Evaluating {model_name.split('.')[0]}: ")
+    model.evaluate(X_test, y_test, batch_size)
+    report = get_classification_report(X_test, y_test, model)
+    print(report)
+    return report
